@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aqueum — Infrastructure Leakage & Structural Integrity</title>
+  <!-- Tailwind CSS & DaisyUI -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdn.jsdelivr.net/npm/daisyui@4.7.2/dist/full.min.css" rel="stylesheet" type="text/css" />
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: '#00f2fe',
+            accent: '#4facfe',
+            hazard: '#ff0055',
+            surface: '#0f172a',
+            card: '#1e293b'
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen font-sans antialiased">
+
+  <!-- TOP HAZARD BANNER (Hidden by default, toggles on Critical Leak) -->
+  <div id="sosBanner" class="hidden bg-gradient-to-r from-red-600 via-rose-500 to-red-600 text-white font-bold py-2 px-4 text-center text-sm shadow-lg border-b border-red-400 animate-pulse flex justify-between items-center">
+    <span>⚠️ CRITICAL SOS ALERT: ACTIVE HIGH-PRESSURE STRUCTURAL LEAK DETECTED</span>
+    <button onclick="dismissBanner()" class="text-xs bg-red-950 hover:bg-red-900 px-2 py-1 rounded border border-red-400">Dismiss</button>
+  </div>
+
+  <!-- HEADER NAV -->
+  <header class="border-b border-slate-800 bg-slate-900/80 backdrop-blur sticky top-0 z-40 px-4 md:px-8 py-4 flex flex-wrap justify-between items-center gap-4">
+    <div class="flex items-center gap-3">
+      <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-400 to-blue-600 flex items-center justify-center font-extrabold text-slate-950 text-xl tracking-wider shadow-lg shadow-cyan-500/20">
+        AQ
+      </div>
+      <div>
+        <h1 class="text-xl font-bold tracking-tight text-white flex items-center gap-2">
+          AQUEUM
+          <span class="text-xs bg-cyan-500/10 text-cyan-400 border border-cyan-500/30 px-2 py-0.5 rounded-full font-mono">v1.0</span>
+        </h1>
+        <p class="text-xs text-slate-400">Structural Vulnerability & Leak Detection</p>
+      </div>
+    </div>
+
+    <div class="flex items-center gap-3">
+      <button onclick="openReportModal()" class="btn btn-sm bg-rose-600 hover:bg-rose-500 text-white border-none font-bold shadow-lg shadow-rose-600/30">
+        🚨 TRIGGER EMERGENCY SOS
+      </button>
+    </div>
+  </header>
+
+  <!-- MAIN CONTAINER -->
+  <main class="p-4 md:p-8 max-w-7xl mx-auto space-y-8">
+
+    <!-- METRICS OVERVIEW -->
+    <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-sm">
+        <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Monitored Structures</p>
+        <p class="text-3xl font-extrabold text-white mt-2" id="totalStructures">3</p>
+        <p class="text-xs text-cyan-400 mt-1">100% telemetry online</p>
+      </div>
+
+      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-sm">
+        <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Avg. Vulnerability Rating</p>
+        <p class="text-3xl font-extrabold text-amber-400 mt-2" id="avgVulnerability">58%</p>
+        <p class="text-xs text-amber-500/80 mt-1">Moderate Risk Level</p>
+      </div>
+
+      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-sm">
+        <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Active Leak Log</p>
+        <p class="text-3xl font-extrabold text-rose-400 mt-2" id="activeLeaksCount">2</p>
+        <p class="text-xs text-rose-500/80 mt-1">1 Critical, 1 Minor</p>
+      </div>
+
+      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-sm">
+        <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Emergency Dispatches</p>
+        <p class="text-3xl font-extrabold text-emerald-400 mt-2" id="dispatchesCount">1</p>
+        <p class="text-xs text-emerald-400 mt-1">Team En Route</p>
+      </div>
+    </section>
+
+    <!-- STRUCTURE MONITORING GRID -->
+    <section>
+      <div class="flex justify-between items-center mb-4">
+        <div>
+          <h2 class="text-lg font-bold text-white">Monitored Assets & Sites</h2>
+          <p class="text-xs text-slate-400">Real-time internal pressure & moisture readings</p>
+        </div>
+        <button onclick="openReportModal()" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-200 px-3 py-1.5 rounded-lg border border-slate-700">
+          + Log Leak
+        </button>
+      </div>
+
+      <div id="structuresGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- JS will dynamically populate structure cards here -->
+      </div>
+    </section>
+
+    <!-- PRICING TIERS -->
+    <section class="border-t border-slate-800 pt-8 mt-12">
+      <div class="text-center mb-8">
+        <h2 class="text-xl font-bold text-white">Commercial License Plans</h2>
+        <p class="text-sm text-slate-400 mt-1">Scalable protection for structural integrity</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <!-- FREEMIUM -->
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 flex flex-col justify-between">
+          <div>
+            <h3 class="text-lg font-bold text-white">Starter</h3>
+            <p class="text-xs text-slate-400 mt-1">For single building site checks</p>
+            <div class="my-4">
+              <span class="text-3xl font-extrabold text-white">₹0</span>
+              <span class="text-xs text-slate-400">/ forever</span>
+            </div>
+            <ul class="text-xs text-slate-300 space-y-2">
+              <li>✓ 1 Monitored Structure</li>
+              <li>✓ Basic vulnerability scoring</li>
+              <li>✓ Manual SOS leak logging</li>
+            </ul>
+          </div>
+          <button class="btn btn-sm btn-outline border-slate-700 text-slate-300 hover:bg-slate-800 mt-6 w-full">Current Plan</button>
+        </div>
+
+        <!-- STANDARD PRO -->
+        <div class="bg-slate-900 border-2 border-cyan-500/50 rounded-2xl p-6 flex flex-col justify-between relative shadow-lg shadow-cyan-500/10">
+          <span class="absolute -top-3 right-4 bg-cyan-500 text-slate-950 font-bold text-[10px] uppercase tracking-widest px-2 py-0.5 rounded-full">Popular</span>
+          <div>
+            <h3 class="text-lg font-bold text-white">Standard Pro</h3>
+            <p class="text-xs text-slate-400 mt-1">For medium commercial assets</p>
+            <div class="my-4">
+              <span class="text-3xl font-extrabold text-cyan-400">₹30,000</span>
+              <span class="text-xs text-slate-400">/ year</span>
+            </div>
+            <ul class="text-xs text-slate-300 space-y-2">
+              <li>✓ Up to 5 Monitored Structures</li>
+              <li>✓ Automated vulnerability scoring</li>
+              <li>✓ SMS & Email SOS notifications</li>
+              <li>✓ Sensor history logs</li>
+            </ul>
+          </div>
+          <button class="btn btn-sm bg-cyan-500 hover:bg-cyan-400 text-slate-950 border-none font-bold mt-6 w-full">Upgrade to Pro</button>
+        </div>
+
+        <!-- ENTERPRISE -->
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 flex flex-col justify-between">
+          <div>
+            <h3 class="text-lg font-bold text-white">Enterprise</h3>
+            <p class="text-xs text-slate-400 mt-1">For multi-building facilities</p>
+            <div class="my-4">
+              <span class="text-3xl font-extrabold text-rose-400">₹50,000</span>
+              <span class="text-xs text-slate-400">/ year max</span>
+            </div>
+            <ul class="text-xs text-slate-300 space-y-2">
+              <li>✓ Up to 15 Monitored Structures</li>
+              <li>✓ Real-time telemetry integration</li>
+              <li>✓ Dedicated inspection dispatch center</li>
+              <li>✓ Custom SMS SOS alerts</li>
+            </ul>
+          </div>
+          <button class="btn btn-sm bg-slate-800 hover:bg-slate-700 text-white border-none mt-6 w-full">Contact Enterprise</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- REPORT LEAK MODAL -->
+  <dialog id="reportModal" class="modal modal-bottom sm:modal-middle">
+    <div class="modal-box bg-slate-900 border border-slate-800 text-slate-100">
+      <h3 class="font-bold text-lg text-rose-400 flex items-center gap-2">
+        🚨 Log Internal Leak & Trigger SOS
+      </h3>
+      <p class="text-xs text-slate-400 mt-1">Enter incident details to update structural vulnerability index.</p>
+      
+      <form id="leakForm" onsubmit="submitLeak(event)" class="space-y-4 mt-4">
+        <div>
+          <label class="block text-xs font-semibold text-slate-300 mb-1">Select Structure</label>
+          <select id="structureSelect" class="select select-sm select-bordered w-full bg-slate-800 text-slate-100 border-slate-700">
+            <!-- Dynamically populated -->
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-300 mb-1">Leak Location / Node</label>
+          <input id="leakLocation" type="text" placeholder="e.g. Jacket Leg B / Basement Wall 3" required class="input input-sm input-bordered w-full bg-slate-800 text-slate-100 border-slate-700" />
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-300 mb-1">Leak Severity</label>
+          <select id="leakSeverity" class="select select-sm select-bordered w-full bg-slate-800 text-slate-100 border-slate-700">
+            <option value="Minor">Minor Seep (Low Risk)</option>
+            <option value="Moderate">Moderate Moisture (Medium Risk)</option>
+            <option value="Critical" selected>Critical Breach (High Pressure / SOS)</option>
+          </select>
+        </div>
+
+        <div class="modal-action">
+          <button type="button" onclick="closeReportModal()" class="btn btn-sm bg-slate-800 text-slate-300 hover:bg-slate-700 border-none">Cancel</button>
+          <button type="submit" class="btn btn-sm bg-rose-600 hover:bg-rose-500 text-white border-none font-bold">Dispatch SOS Alert</button>
+        </div>
+      </form>
+    </div>
+  </dialog>
+
+  <!-- INSPECTION DETAIL MODAL -->
+  <dialog id="inspectModal" class="modal modal-bottom sm:modal-middle">
+    <div class="modal-box bg-slate-900 border border-slate-800 text-slate-100 max-w-lg">
+      <h3 id="inspectTitle" class="font-bold text-lg text-white">Structure Inspection Details</h3>
+      <p id="inspectSubtitle" class="text-xs text-slate-400 mt-1">Telemetry and historical analysis</p>
+
+      <div class="space-y-4 mt-4">
+        <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-2">
+          <div class="flex justify-between text-xs">
+            <span class="text-slate-400">Vulnerability Score:</span>
+            <span id="inspectScore" class="font-bold text-amber-400">75%</span>
+          </div>
+          <div class="flex justify-between text-xs">
+            <span class="text-slate-400">Internal Pressure:</span>
+            <span id="inspectPressure" class="font-mono text-cyan-400">4.2 bar</span>
+          </div>
+          <div class="flex justify-between text-xs">
+            <span class="text-slate-400">Wall Degradation:</span>
+            <span id="inspectDegradation" class="font-mono text-rose-400">12% loss</span>
+          </div>
+        </div>
+
+        <div>
+          <h4 class="text-xs font-bold text-slate-300 mb-2">Active Incidents</h4>
+          <div id="inspectIncidents" class="text-xs text-slate-400 space-y-1">
+            <!-- Dynamically populated -->
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-action flex justify-between items-center">
+        <button id="resolveBtn" onclick="resolveCurrentStructure()" class="btn btn-sm bg-emerald-600 hover:bg-emerald-500 text-white border-none font-bold text-xs">
+          ✅ Resolve Leak & Clear SOS
+        </button>
+        <button onclick="closeInspectModal()" class="btn btn-sm bg-slate-800 text-slate-300 hover:bg-slate-700 border-none">Close</button>
+      </div>
+    </div>
+  </dialog>
+
+  <!-- APPLICATION SCRIPT -->
+  <script>
+    let structures = [
+      {
+        id: 1,
+        name: "Platform Alpha - Gulf Deck",
+        location: "Offshore Sector 4",
+        vulnerability: 84,
+        status: "Critical SOS",
+        activeLeak: "Jacket Leg B - Seam Fracture",
+        pressure: "5.8 bar",
+        degradation: "18% loss"
+      },
+      {
+        id: 2,
+        name: "Sector 7 Commercial Complex",
+        location: "Basement Level 2 Vault",
+        vulnerability: 52,
+        status: "Warning",
+        activeLeak: "Main Fluid Riser Joint",
+        pressure: "3.1 bar",
+        degradation: "8% loss"
+      },
+      {
+        id: 3,
+        name: "Metro Tunnel Shaft C",
+        location: "North Sub-Anchor",
+        vulnerability: 18,
+        status: "Safe",
+        activeLeak: "None Detected",
+        pressure: "1.2 bar",
+        degradation: "2% loss"
+      }
+    ];
+
+    let currentInspectId = null;
+
+    function renderDashboard() {
+      const grid = document.getElementById('structuresGrid');
+      const select = document.getElementById('structureSelect');
+      grid.innerHTML = '';
+      select.innerHTML = '';
+
+      let totalVuln = 0;
+      let activeLeaks = 0;
+
+      structures.forEach(s => {
+        totalVuln += s.vulnerability;
+        if (s.activeLeak !== "None Detected") activeLeaks++;
+
+        // Status badge color
+        let badgeClass = "bg-emerald-500/10 text-emerald-400 border-emerald-500/30";
+        let scoreColor = "text-emerald-400";
+
+        if (s.vulnerability >= 70) {
+          badgeClass = "bg-rose-500/10 text-rose-400 border-rose-500/30 animate-pulse";
+          scoreColor = "text-rose-400";
+        } else if (s.vulnerability >= 40) {
+          badgeClass = "bg-amber-500/10 text-amber-400 border-amber-500/30";
+          scoreColor = "text-amber-400";
+        }
+
+        // Render Card
+        grid.innerHTML += `
+          <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 hover:border-slate-700 transition flex flex-col justify-between">
+            <div>
+              <div class="flex justify-between items-start mb-3">
+                <span class="text-xs px-2.5 py-1 rounded-full border font-semibold ${badgeClass}">
+                  ${s.status}
+                </span>
+                <span class="text-xs font-mono text-slate-500">ID: #00${s.id}</span>
+              </div>
+              <h3 class="font-bold text-white text-base">${s.name}</h3>
+              <p class="text-xs text-slate-400 mt-0.5">${s.location}</p>
+
+              <div class="my-4 p-3 bg-slate-950 rounded-xl border border-slate-800/80">
+                <div class="flex justify-between text-xs mb-1">
+                  <span class="text-slate-400">Vulnerability Rating</span>
+                  <span class="font-extrabold ${scoreColor}">${s.vulnerability}%</span>
+                </div>
+                <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
+                  <div class="h-full ${s.vulnerability >= 70 ? 'bg-rose-500' : s.vulnerability >= 40 ? 'bg-amber-400' : 'bg-emerald-400'}" style="width: ${s.vulnerability}%"></div>
+                </div>
+              </div>
+
+              <p class="text-xs text-slate-300">
+                <span class="text-slate-500">Active Leak:</span> ${s.activeLeak}
+              </p>
+            </div>
+
+            <button onclick="inspectStructure(${s.id})" class="btn btn-sm bg-slate-800 hover:bg-slate-700 text-slate-200 border-none mt-5 w-full text-xs">
+              Inspect Platform & Sensor Telemetry
+            </button>
+          </div>
+        `;
+
+        // Render Select Option
+        select.innerHTML += `<option value="${s.id}">${s.name}</option>`;
+      });
+
+      // Update Top Summaries
+      document.getElementById('totalStructures').innerText = structures.length;
+      document.getElementById('avgVulnerability').innerText = Math.round(totalVuln / structures.length) + '%';
+      document.getElementById('activeLeaksCount').innerText = activeLeaks;
+    }
+
+    function openReportModal() {
+      document.getElementById('reportModal').showModal();
+    }
+
+    function closeReportModal() {
+      document.getElementById('reportModal').close();
+    }
+
+    function submitLeak(e) {
+      e.preventDefault();
+      const id = parseInt(document.getElementById('structureSelect').value);
+      const loc = document.getElementById('leakLocation').value;
+      const severity = document.getElementById('leakSeverity').value;
+
+      const struct = structures.find(s => s.id === id);
+      if (struct) {
+        struct.activeLeak = `${loc} (${severity})`;
+        if (severity === 'Critical') {
+          struct.vulnerability = Math.min(100, struct.vulnerability + 30);
+          struct.status = "Critical SOS";
+          document.getElementById('sosBanner').classList.remove('hidden');
+        } else {
+          struct.vulnerability = Math.min(100, struct.vulnerability + 15);
+          struct.status = "Warning";
+        }
+      }
+
+      renderDashboard();
+      closeReportModal();
+      document.getElementById('leakForm').reset();
+    }
+
+    function inspectStructure(id) {
+      currentInspectId = id;
+      const s = structures.find(item => item.id === id);
+      if (!s) return;
+
+      document.getElementById('inspectTitle').innerText = s.name;
+      document.getElementById('inspectSubtitle').innerText = s.location;
+      document.getElementById('inspectScore').innerText = s.vulnerability + '%';
+      document.getElementById('inspectPressure').innerText = s.pressure;
+      document.getElementById('inspectDegradation').innerText = s.degradation;
+
+      const incidents = document.getElementById('inspectIncidents');
+      incidents.innerHTML = s.activeLeak !== "None Detected" 
+        ? `<div class="p-2 bg-rose-500/10 border border-rose-500/20 text-rose-300 rounded">${s.activeLeak}</div>`
+        : `<div class="p-2 bg-emerald-500/10 border border-emerald-500/20 text-emerald-300 rounded">No active breaches reported. Structural envelope intact.</div>`;
+
+      document.getElementById('inspectModal').showModal();
+    }
+
+    function resolveCurrentStructure() {
+      if (currentInspectId) {
+        const s = structures.find(item => item.id === currentInspectId);
+        if (s) {
+          s.activeLeak = "None Detected";
+          s.vulnerability = 15;
+          s.status = "Safe";
+        }
+        renderDashboard();
+        closeInspectModal();
+      }
+    }
+
+    function closeInspectModal() {
+      document.getElementById('inspectModal').close();
+    }
+
+    function dismissBanner() {
+      document.getElementById('sosBanner').classList.add('hidden');
+    }
+
+    // Initial Render
+    renderDashboard();
+  </script>
+</body>
+</html>
